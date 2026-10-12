@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'todo.dart';
+import 'package:i12_into_012/models/todo.dart';
 
 /// Represents the current state of the todo application.
 @immutable
@@ -10,12 +10,12 @@ class AppState {
   final Set<String> selectedTodoIds;
 
   /// Creates a new AppState.
-  AppState({
-    this.todos = const [],
-    this.isDarkMode = false,
-    this.asksForDeletionConfirmation = true,
-    this.selectedTodoIds = const {},
-  });
+const AppState({
+  this.todos = const [],
+  this.isDarkMode = false,
+  this.asksForDeletionConfirmation = true,
+  this.selectedTodoIds = const {},
+});
 
   /// Create a copy with modified properties
   AppState copyWith({

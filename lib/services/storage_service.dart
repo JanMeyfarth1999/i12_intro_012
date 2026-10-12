@@ -12,7 +12,7 @@ class StorageService {
     return File('${directory.path}/todo_app_state.json');
   }
   /// Saves the current application state to the JSON file.
-  Future<void> saveSate(AppState state) async {
+  Future<void> saveState(AppState state) async {
       final file = await _getFile();
 
       /// Converts the AppState into a JSON string.
