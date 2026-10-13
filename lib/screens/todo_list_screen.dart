@@ -20,6 +20,12 @@ class TodoListScreen extends ConsumerWidget {
           'Todos: ${appState.todos.length}',
         ),
       ),
+
+      // Opens the dialog for creating a new todo.
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
