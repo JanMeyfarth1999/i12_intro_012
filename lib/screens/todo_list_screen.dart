@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i12_into_012/providers/app_state_provider.dart';
+import 'package:i12_into_012/widgets/add_todo_dialog.dart';
 
 // Display the list of todos.
 class TodoListScreen extends ConsumerWidget {
@@ -23,7 +24,14 @@ class TodoListScreen extends ConsumerWidget {
 
       // Opens the dialog for creating a new todo.
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const AddTodoDialog();
+            },
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
