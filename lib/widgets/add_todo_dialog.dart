@@ -7,7 +7,7 @@ class AddTodoDialog extends ConsumerStatefulWidget {
   const AddTodoDialog({super.key});
 
   @override
-  State<AddTodoDialog> createState() => _AddTodoDialogState();
+  ConsumerState<AddTodoDialog> createState() => _AddTodoDialogState();
 } 
 
 class _AddTodoDialogState extends ConsumerState<AddTodoDialog> {
