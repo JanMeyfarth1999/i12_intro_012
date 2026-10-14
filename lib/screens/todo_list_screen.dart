@@ -20,7 +20,41 @@ class TodoListScreen extends ConsumerWidget {
         actions: [
           if (appState.selectedTodoIds.isNotEmpty)
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                // Checks whether a deletion confirmation is required.
+                if (appState.asksForDeletionConfirmation) {
+                  final shouldDelete = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Todos löschen ?'),
+                        content: const Text(
+                          'Möchtest du die ausgewählten Todos wirklich löschen ?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text('Abbrechen'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text('Löschen'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (shouldDelete != true) {
+                    return;
+                  }
+                }
+                // Deletes the selected todos.
+                await ref.read(appStateProvider.notifier).deleteTodos();
+              },
               icon: const Icon(Icons.delete),
             ),
         ],
