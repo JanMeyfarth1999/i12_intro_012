@@ -10,12 +10,12 @@ class AppState {
   final Set<String> selectedTodoIds;
 
   /// Creates a new AppState.
-const AppState({
-  this.todos = const [],
-  this.isDarkMode = false,
-  this.asksForDeletionConfirmation = true,
-  this.selectedTodoIds = const {},
-});
+  const AppState({
+    this.todos = const [],
+    this.isDarkMode = false,
+    this.asksForDeletionConfirmation = true,
+    this.selectedTodoIds = const {},
+  });
 
   /// Create a copy with modified properties
   AppState copyWith({
@@ -41,32 +41,36 @@ const AppState({
       'asksForDeletionConfirmation': asksForDeletionConfirmation,
     };
   }
+
   /// Creates an AppState from JSON data.
-factory AppState.fromJson(Map<String, dynamic> json) {
+  factory AppState.fromJson(Map<String, dynamic> json) {
     return AppState(
-    todos: (json['todos'] as List<dynamic>)
-      .map((todoJson) => Todo.fromJson(todoJson as Map<String, dynamic>))
-      .toList(),
-    
-    isDarkMode: json['isDarkMode'] as bool,
-    asksForDeletionConfirmation: json['asksForDeletionConfirmation'] as bool,
+      todos: (json['todos'] as List<dynamic>)
+          .map((todoJson) => Todo.fromJson(todoJson as Map<String, dynamic>))
+          .toList(),
+
+      isDarkMode: json['isDarkMode'] as bool,
+      asksForDeletionConfirmation: json['asksForDeletionConfirmation'] as bool,
     );
-
-
   }
+
   /// Compares two AppState objects by their values.
-    @override
+  @override
   bool operator ==(Object other) {
-    return other is AppState && 
-    listEquals(other.todos, todos) &&
-    other.isDarkMode == isDarkMode &&
-    other.asksForDeletionConfirmation == asksForDeletionConfirmation &&
-    setEquals(other.selectedTodoIds, selectedTodoIds);
+    return other is AppState &&
+        listEquals(other.todos, todos) &&
+        other.isDarkMode == isDarkMode &&
+        other.asksForDeletionConfirmation == asksForDeletionConfirmation &&
+        setEquals(other.selectedTodoIds, selectedTodoIds);
   }
 
-    @override
+  @override
   int get hashCode {
-    return Object.hash(Object.hashAll(todos), isDarkMode, asksForDeletionConfirmation, Object.hashAllUnordered(selectedTodoIds),);
+    return Object.hash(
+      Object.hashAll(todos),
+      isDarkMode,
+      asksForDeletionConfirmation,
+      Object.hashAllUnordered(selectedTodoIds),
+    );
   }
-
 }

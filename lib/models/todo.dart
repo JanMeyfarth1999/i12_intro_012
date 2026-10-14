@@ -36,7 +36,7 @@ class Todo {
     };
   }
 
-    // Create Todo from JSON
+  // Create Todo from JSON
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(
       id: json['id'] as String,
@@ -45,12 +45,12 @@ class Todo {
     );
   }
 
-  @override 
+  @override
   bool operator ==(Object other) {
     return other is Todo &&
-    other.id == id &&
-    other.text == text &&
-    other.isCompleted == isCompleted;
+        other.id == id &&
+        other.text == text &&
+        other.isCompleted == isCompleted;
   }
 
   @override

@@ -8,7 +8,7 @@ class AddTodoDialog extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<AddTodoDialog> createState() => _AddTodoDialogState();
-} 
+}
 
 class _AddTodoDialogState extends ConsumerState<AddTodoDialog> {
   // Controls and reads the text entered for a new todo.
@@ -56,10 +56,8 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog> {
             }
           },
           child: const Text('Hinzufügen'),
-          )
+        ),
       ],
     );
   }
 }
-
-

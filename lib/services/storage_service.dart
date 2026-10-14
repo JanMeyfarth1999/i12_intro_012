@@ -11,31 +11,30 @@ class StorageService {
     final directory = await getApplicationDocumentsDirectory();
     return File('${directory.path}/todo_app_state.json');
   }
+
   /// Saves the current application state to the JSON file.
   Future<void> saveState(AppState state) async {
-      final file = await _getFile();
+    final file = await _getFile();
 
-      /// Converts the AppState into a JSON string.
-      final jsonString = jsonEncode(state.toJson());
+    /// Converts the AppState into a JSON string.
+    final jsonString = jsonEncode(state.toJson());
 
-      /// Writes the JSON string to the file.
-      await file.writeAsString(jsonString);
+    /// Writes the JSON string to the file.
+    await file.writeAsString(jsonString);
+  }
+
+  ///Loads the application state from the JSON file.
+  Future<AppState?> loadState() async {
+    final file = await _getFile();
+    // Returns null if no saved state exists yet.
+    if (!await file.exists()) {
+      return null;
     }
+    //Reads the saved JSON string from the file.
+    final jsonString = await file.readAsString();
 
-    ///Loads the application state from the JSON file.
-    Future<AppState?> loadState() async {
-      final file = await _getFile();
-      // Returns null if no saved state exists yet.
-      if(!await file.exists()) {
-        return null;
-      }
-      //Reads the saved JSON string from the file. 
-      final jsonString = await file.readAsString();
-
-      // Converts the JSON string back into a Map.
-      final json = jsonDecode(jsonString) as Map<String,dynamic>;
-      return AppState.fromJson(json);
-    }
-  
+    // Converts the JSON string back into a Map.
+    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+    return AppState.fromJson(json);
+  }
 }
- 

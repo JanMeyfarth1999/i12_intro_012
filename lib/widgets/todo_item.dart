@@ -15,11 +15,11 @@ class TodoItem extends StatelessWidget {
   final VoidCallback onSelectionToggle;
 
   const TodoItem({
-    super.key,
     required this.todo,
     required this.onToggle,
     required this.isSelected,
     required this.onSelectionToggle,
+    super.key,
   });
 
   @override
@@ -30,23 +30,23 @@ class TodoItem extends StatelessWidget {
         value: todo.isCompleted,
         onChanged: (_) {
           onToggle();
-        }
-        ),
+        },
+      ),
       title: Text(
         todo.text,
         style: TextStyle(
           // Crosses out the text when the todo is completed.
           decoration: todo.isCompleted
-            ? TextDecoration.lineThrough
-            : TextDecoration.none,
+              ? TextDecoration.lineThrough
+              : TextDecoration.none,
         ),
-        ),
+      ),
 
-        // Selects or deselects the todo when it is tapped.
-        onTap: onSelectionToggle,
+      // Selects or deselects the todo when it is tapped.
+      onTap: onSelectionToggle,
 
-        // Highlights the todo when it is selected.
-        selected: isSelected,
+      // Highlights the todo when it is selected.
+      selected: isSelected,
     );
   }
 }

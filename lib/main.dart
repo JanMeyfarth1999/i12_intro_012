@@ -13,8 +13,9 @@ void main() {
   );
 }
 
-// Root widget of the todo application.
+/// Root widget of the todo application.
 class MyApp extends ConsumerWidget {
+  /// Creates the root widget of the todo application.
   const MyApp({super.key});
 
   @override
@@ -26,7 +27,6 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
-          brightness: Brightness.light,
         ),
       ),
 
@@ -43,5 +43,4 @@ class MyApp extends ConsumerWidget {
       home: const TodoListScreen(),
     );
   }
-
 }

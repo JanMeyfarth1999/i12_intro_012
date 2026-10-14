@@ -12,7 +12,7 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 /// Manages the application state and its changes.
 class AppStateNotifier extends Notifier<AppState> {
   /// Generates a unique ID for every new todo.
-  final Uuid _uuid = Uuid();
+  final Uuid _uuid = const Uuid();
   @override
   AppState build() {
     loadState();
@@ -119,5 +119,6 @@ class AppStateNotifier extends Notifier<AppState> {
   }
 }
 
-final appStateProvider = 
-    NotifierProvider<AppStateNotifier, AppState>(AppStateNotifier.new);
+final appStateProvider = NotifierProvider<AppStateNotifier, AppState>(
+  AppStateNotifier.new,
+);
