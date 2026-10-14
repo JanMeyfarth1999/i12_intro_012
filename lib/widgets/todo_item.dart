@@ -8,10 +8,18 @@ class TodoItem extends StatelessWidget {
   // Funktion that is called when the todo is toggled.
   final VoidCallback onToggle;
 
+  // Inicates whether this todo is selected.
+  final bool isSelected;
+
+  // Function that is called when the todo selection changes.
+  final VoidCallback onSelectionToggle;
+
   const TodoItem({
     super.key,
     required this.todo,
     required this.onToggle,
+    required this.isSelected,
+    required this.onSelectionToggle,
   });
 
   @override
@@ -33,6 +41,12 @@ class TodoItem extends StatelessWidget {
             : TextDecoration.none,
         ),
         ),
+
+        // Selects or deselects the todo when it is tapped.
+        onTap: onSelectionToggle,
+
+        // Highlights the todo when it is selected.
+        selected: isSelected,
     );
   }
 }

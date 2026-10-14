@@ -16,6 +16,14 @@ class TodoListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo App'),
+        // Shows the delete button only when at least one todo is selected.
+        actions: [
+          if (appState.selectedTodoIds.isNotEmpty)
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.delete),
+            ),
+        ],
       ),
       body: ListView.builder(
         itemCount: appState.todos.length,
@@ -28,6 +36,13 @@ class TodoListScreen extends ConsumerWidget {
             onToggle: () {
               // Toggles the completion status of this todo.
               ref.read(appStateProvider.notifier).toggleTodo(todo.id);
+            },
+            // chcks whether tis todo is currently selected.
+            isSelected: appState.selectedTodoIds.contains(todo.id),
+
+            // Selects or deselects this todo.
+            onSelectionToggle: () {
+              ref.read(appStateProvider.notifier).toggleTodoSelection(todo.id);
             },
           );
         },
