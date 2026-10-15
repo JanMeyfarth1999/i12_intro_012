@@ -85,7 +85,7 @@ class TodoListScreen extends ConsumerWidget {
               // Toggles the completion status of this todo.
               ref.read(appStateProvider.notifier).toggleTodo(todo.id);
             },
-            // chcks whether tis todo is currently selected.
+            // checks whether this todo is currently selected.
             isSelected: appState.selectedTodoIds.contains(todo.id),
 
             // Selects or deselects this todo.
