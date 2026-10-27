@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:i12_into_012/models/app_state.dart';
+import 'package:i12_into_012/services/storage_interface.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Handles saving and loading the application state.
-class StorageService {
+class StorageService implements StorageInterface {
   // Returns the file used to store the application state.
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -13,6 +14,7 @@ class StorageService {
   }
 
   /// Saves the current application state to the JSON file.
+  @override
   Future<void> saveState(AppState state) async {
     final file = await _getFile();
 
@@ -24,6 +26,7 @@ class StorageService {
   }
 
   ///Loads the application state from the JSON file.
+  @override
   Future<AppState?> loadState() async {
     final file = await _getFile();
     // Returns null if no saved state exists yet.
