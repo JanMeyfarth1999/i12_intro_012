@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i12_into_012/models/app_state.dart';
 import 'package:i12_into_012/models/todo.dart';
+import 'package:i12_into_012/services/database_storage_service.dart';
 import 'package:i12_into_012/services/storage_interface.dart';
-import 'package:i12_into_012/services/storage_service.dart';
 import 'package:uuid/uuid.dart';
 
 /// Provides access to the local storage service.
 final storageServiceProvider = Provider<StorageInterface>((ref) {
-  return StorageService();
+  return DatabaseStorageService();
 });
 
 /// Manages the application state and its changes.
