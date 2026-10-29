@@ -12,7 +12,30 @@ class TodoListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watches the current application state.
-    final appState = ref.watch(appStateProvider);
+    final asyncAppState = ref.watch(appStateProvider);
+
+    // Shows a loading indicator while the saved data is being loaded.
+    if (asyncAppState.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Shows an error message if loading fails.
+    if (asyncAppState.hasError) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            'Fehler beim Laden der Todos: ${asyncAppState.error}',
+          ),
+        ),
+      );
+    }
+
+    // Gets the loaded application state.
+    final appState = asyncAppState.requireValue;
 
     return Scaffold(
       appBar: AppBar(

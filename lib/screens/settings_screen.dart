@@ -20,7 +20,7 @@ class SettingsScreen extends ConsumerWidget {
           // Enables or disables dark mode.
           SwitchListTile(
             title: const Text('Dark Mode'),
-            value: appState.isDarkMode,
+            value: appState.value?.isDarkMode ?? false,
             onChanged: (_) {
               ref.read(appStateActionsProvider).toggleDarkMode();
             },
@@ -28,7 +28,7 @@ class SettingsScreen extends ConsumerWidget {
           // Enables or disables deletion confirmation.
           SwitchListTile(
             title: const Text('Löschbestätigung'),
-            value: appState.asksForDeletionConfirmation,
+            value: appState.value?.asksForDeletionConfirmation ?? true,
             onChanged: (_) {
               ref.read(appStateActionsProvider).toggleDeletionConfirmation();
             },

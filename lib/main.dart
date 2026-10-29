@@ -37,7 +37,9 @@ class MyApp extends ConsumerWidget {
         ),
       ),
 
-      themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: (appState.value?.isDarkMode ?? false)
+          ? ThemeMode.dark
+          : ThemeMode.light,
 
       // Opens the todo list as the main screen.
       home: const TodoListScreen(),
