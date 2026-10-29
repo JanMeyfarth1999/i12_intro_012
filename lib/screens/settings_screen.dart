@@ -22,7 +22,7 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Dark Mode'),
             value: appState.isDarkMode,
             onChanged: (_) {
-              ref.read(appStateProvider.notifier).toggleDarkMode();
+              ref.read(appStateActionsProvider).toggleDarkMode();
             },
           ),
           // Enables or disables deletion confirmation.
@@ -30,7 +30,7 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Löschbestätigung'),
             value: appState.asksForDeletionConfirmation,
             onChanged: (_) {
-              ref.read(appStateProvider.notifier).toggleDeletionConfirmation();
+              ref.read(appStateActionsProvider).toggleDeletionConfirmation();
             },
           ),
         ],

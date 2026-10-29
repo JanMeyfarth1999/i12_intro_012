@@ -54,7 +54,7 @@ class TodoListScreen extends ConsumerWidget {
                   }
                 }
                 // Deletes the selected todos.
-                await ref.read(appStateProvider.notifier).deleteTodos();
+                await ref.read(appStateActionsProvider).deleteTodos();
               },
               icon: const Icon(Icons.delete),
             ),
@@ -83,14 +83,14 @@ class TodoListScreen extends ConsumerWidget {
             todo: todo,
             onToggle: () {
               // Toggles the completion status of this todo.
-              ref.read(appStateProvider.notifier).toggleTodo(todo.id);
+              ref.read(appStateActionsProvider).toggleTodo(todo.id);
             },
             // checks whether this todo is currently selected.
             isSelected: appState.selectedTodoIds.contains(todo.id),
 
             // Selects or deselects this todo.
             onSelectionToggle: () {
-              ref.read(appStateProvider.notifier).toggleTodoSelection(todo.id);
+              ref.read(appStateActionsProvider).toggleTodoSelection(todo.id);
             },
           );
         },

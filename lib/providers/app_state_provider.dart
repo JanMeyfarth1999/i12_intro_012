@@ -7,16 +7,11 @@ import 'package:i12_into_012/services/storage_interface.dart';
 import 'package:i12_into_012/services/storage_service.dart';
 import 'package:uuid/uuid.dart';
 
-/// Provides access to the local storage service.
-const bool useSqlite = true;
-
-final storageServiceProvider = Provider<StorageInterface>((ref) {
-  return useSqlite ? DatabaseStorageService() : StorageService();
-});
-
 /// Manages the application state and its changes.
-class AppStateNotifier extends Notifier<AppState>
+abstract class BaseAppStateNotifier extends Notifier<AppState>
     implements AppStateNotifierInterface {
+  StorageInterface get storageService;
+
   /// Generates a unique ID for every new todo.
   final Uuid _uuid = const Uuid();
   @override
@@ -27,7 +22,7 @@ class AppStateNotifier extends Notifier<AppState>
 
   /// Loads the saved application state from local storage.
   Future<void> loadState() async {
-    final storageService = ref.read(storageServiceProvider);
+    final storageService = this.storageService;
     final savedState = await storageService.loadState();
 
     if (savedState != null) {
@@ -48,7 +43,7 @@ class AppStateNotifier extends Notifier<AppState>
       todos: [...state.todos, newTodo],
     );
     // Saves the updated state.
-    final storageService = ref.read(storageServiceProvider);
+    final storageService = this.storageService;
     await storageService.insertTodo(newTodo);
   }
 
@@ -71,7 +66,7 @@ class AppStateNotifier extends Notifier<AppState>
       todos: updatedTodos,
     );
     if (updatedTodo != null) {
-      final storageService = ref.read(storageServiceProvider);
+      final storageService = this.storageService;
       await storageService.updateTodo(updatedTodo!);
     }
   }
@@ -106,7 +101,7 @@ class AppStateNotifier extends Notifier<AppState>
       todos: updatedTodos,
       selectedTodoIds: {},
     );
-    final storageService = ref.read(storageServiceProvider);
+    final storageService = this.storageService;
     for (final id in idsToDelete) {
       await storageService.deleteTodo(id);
     }
@@ -119,7 +114,7 @@ class AppStateNotifier extends Notifier<AppState>
       isDarkMode: !state.isDarkMode,
     );
     // Saves the updated dark mode setting.
-    final storageService = ref.read(storageServiceProvider);
+    final storageService = this.storageService;
     await storageService.saveSettings(state);
   }
 
@@ -130,11 +125,35 @@ class AppStateNotifier extends Notifier<AppState>
       asksForDeletionConfirmation: !state.asksForDeletionConfirmation,
     );
     // Saves the updated deletion confirmation setting.
-    final storageService = ref.read(storageServiceProvider);
+    final storageService = this.storageService;
     await storageService.saveSettings(state);
   }
 }
 
-final appStateProvider = NotifierProvider<AppStateNotifier, AppState>(
-  AppStateNotifier.new,
+/// Notifier for JSON storage.
+class JsonAppStateNotifier extends BaseAppStateNotifier {
+  final StorageInterface _storageService = StorageService();
+
+  @override
+  StorageInterface get storageService => _storageService;
+}
+
+/// Notifier for SQLite storage.
+class SqliteAppStateNotifier extends BaseAppStateNotifier {
+  // Creates one storage service instance for this notifier.
+  final StorageInterface _storageService = DatabaseStorageService();
+
+  // Returns the existing storage service instance.
+  @override
+  StorageInterface get storageService => _storageService;
+}
+
+/// Provides access to the notifier through its interface.
+final appStateProvider = NotifierProvider<BaseAppStateNotifier, AppState>(
+  JsonAppStateNotifier.new,
 );
+
+/// Provides access to the notifier through its interface.
+final appStateActionsProvider = Provider<AppStateNotifierInterface>((ref) {
+  return ref.read(appStateProvider.notifier);
+});

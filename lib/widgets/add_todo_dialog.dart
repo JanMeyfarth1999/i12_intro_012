@@ -48,7 +48,7 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog> {
             final text = _textController.text.trim();
 
             if (text.isNotEmpty) {
-              await ref.read(appStateProvider.notifier).addTodo(text);
+              await ref.read(appStateActionsProvider).addTodo(text);
 
               if (context.mounted) {
                 Navigator.of(context).pop();
