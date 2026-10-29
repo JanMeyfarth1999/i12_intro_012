@@ -21,9 +21,9 @@ class DatabaseStorageService implements StorageInterface {
           )
         ''');
         await db.execute('''
-          CREATE TABLE todos (
+          CREATE TABLE settings (
            id INTEGER PRIMARY KEY,
-           isDarkmode INTEGER NOT NULL,
+           isDarkMode INTEGER NOT NULL,
            asksForDeletionConfirmation INTEGER NOT NULL
           )
         ''');
@@ -37,18 +37,18 @@ class DatabaseStorageService implements StorageInterface {
 
     await db.transaction((txn) async {
       await txn.delete('todos');
+      await txn.insert(
+        'settings',
+        {
+          'id': 1,
+          'isDarkMode': state.isDarkMode ? 1 : 0,
+          'asksForDeletionConfirmation': state.asksForDeletionConfirmation
+              ? 1
+              : 0,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
       for (final todo in state.todos) {
-        await txn.insert(
-          'settings',
-          {
-            'id': 1,
-            'isDarkMode': state.isDarkMode ? 1 : 0,
-            'asksForDeletionConfirmation': state.asksForDeletionConfirmation
-                ? 1
-                : 0,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
         await txn.insert(
           'todos',
           {
@@ -86,6 +86,64 @@ class DatabaseStorageService implements StorageInterface {
       todos: todos,
       isDarkMode: isDarkMode,
       asksForDeletionConfirmation: asksForDeletionConfirmation,
+    );
+  }
+
+  @override
+  Future<void> insertTodo(Todo todo) async {
+    final db = await _openDatabase();
+
+    await db.insert(
+      'todos',
+      {
+        'id': todo.id,
+        'text': todo.text,
+        'isCompleted': todo.isCompleted ? 1 : 0,
+      },
+    );
+  }
+
+  @override
+  Future<void> deleteTodo(String id) async {
+    final db = await _openDatabase();
+
+    await db.delete(
+      'todos',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  @override
+  Future<void> updateTodo(Todo todo) async {
+    final db = await _openDatabase();
+
+    await db.update(
+      'todos',
+      {
+        'text': todo.text,
+        'isCompleted': todo.isCompleted ? 1 : 0,
+      },
+      where: 'id = ?',
+      whereArgs: [todo.id],
+    );
+  }
+
+  // Saves only the application settings.
+  @override
+  Future<void> saveSettings(AppState state) async {
+    final db = await _openDatabase();
+
+    await db.insert(
+      'settings',
+      {
+        'id': 1,
+        'isDarkMode': state.isDarkMode ? 1 : 0,
+        'asksForDeletionConfirmation': state.asksForDeletionConfirmation
+            ? 1
+            : 0,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 }

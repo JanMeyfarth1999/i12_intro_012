@@ -1,17 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i12_into_012/models/app_state.dart';
 import 'package:i12_into_012/models/todo.dart';
+import 'package:i12_into_012/providers/app_state_notifier_interface.dart';
 import 'package:i12_into_012/services/database_storage_service.dart';
 import 'package:i12_into_012/services/storage_interface.dart';
+import 'package:i12_into_012/services/storage_service.dart';
 import 'package:uuid/uuid.dart';
 
 /// Provides access to the local storage service.
+const bool useSqlite = true;
+
 final storageServiceProvider = Provider<StorageInterface>((ref) {
-  return DatabaseStorageService();
+  return useSqlite ? DatabaseStorageService() : StorageService();
 });
 
 /// Manages the application state and its changes.
-class AppStateNotifier extends Notifier<AppState> {
+class AppStateNotifier extends Notifier<AppState>
+    implements AppStateNotifierInterface {
   /// Generates a unique ID for every new todo.
   final Uuid _uuid = const Uuid();
   @override
@@ -30,13 +35,8 @@ class AppStateNotifier extends Notifier<AppState> {
     }
   }
 
-  /// Saves the current state to local storage.
-  Future<void> _saveState() async {
-    final storageService = ref.read(storageServiceProvider);
-    await storageService.saveState(state);
-  }
-
   /// Adds a new todo to the application state.
+  @override
   Future<void> addTodo(String text) async {
     final newTodo = Todo(
       // Creates a new todo with a unique ID.
@@ -48,17 +48,21 @@ class AppStateNotifier extends Notifier<AppState> {
       todos: [...state.todos, newTodo],
     );
     // Saves the updated state.
-    await _saveState();
+    final storageService = ref.read(storageServiceProvider);
+    await storageService.insertTodo(newTodo);
   }
 
   // Toggles the completion status of a todo.
+  @override
   Future<void> toggleTodo(String id) async {
     // creates a new list and toggles only the todo with the matching ID.
+    Todo? updatedTodo;
     final updatedTodos = state.todos.map((todo) {
       if (todo.id == id) {
-        return todo.copyWith(
+        updatedTodo = todo.copyWith(
           isCompleted: !todo.isCompleted,
         );
+        return updatedTodo!;
       }
       return todo;
     }).toList();
@@ -66,10 +70,13 @@ class AppStateNotifier extends Notifier<AppState> {
     state = state.copyWith(
       todos: updatedTodos,
     );
-    // Saves the update state.
-    await _saveState();
+    if (updatedTodo != null) {
+      final storageService = ref.read(storageServiceProvider);
+      await storageService.updateTodo(updatedTodo!);
+    }
   }
 
+  @override
   void toggleTodoSelection(String id) {
     // Creates a copy of the currently selected todo IDs.
     final selectedIds = {...state.selectedTodoIds};
@@ -87,7 +94,9 @@ class AppStateNotifier extends Notifier<AppState> {
   }
 
   // Deletes all currently selected todos.
+  @override
   Future<void> deleteTodos() async {
+    final idsToDelete = {...state.selectedTodoIds};
     // Creates a new list without the selected todos.
     final updatedTodos = state.todos.where((todo) {
       return !state.selectedTodoIds.contains(todo.id);
@@ -97,26 +106,32 @@ class AppStateNotifier extends Notifier<AppState> {
       todos: updatedTodos,
       selectedTodoIds: {},
     );
-    // Saves the updated State.
-    await _saveState();
+    final storageService = ref.read(storageServiceProvider);
+    for (final id in idsToDelete) {
+      await storageService.deleteTodo(id);
+    }
   }
 
   //Toggles between light mode and dark mode.
+  @override
   Future<void> toggleDarkMode() async {
     state = state.copyWith(
       isDarkMode: !state.isDarkMode,
     );
     // Saves the updated dark mode setting.
-    await _saveState();
+    final storageService = ref.read(storageServiceProvider);
+    await storageService.saveSettings(state);
   }
 
   // Toggles the deletion confirmation setting.
+  @override
   Future<void> toggleDeletionConfirmation() async {
     state = state.copyWith(
       asksForDeletionConfirmation: !state.asksForDeletionConfirmation,
     );
     // Saves the updated deletion confirmation setting.
-    await _saveState();
+    final storageService = ref.read(storageServiceProvider);
+    await storageService.saveSettings(state);
   }
 }
 

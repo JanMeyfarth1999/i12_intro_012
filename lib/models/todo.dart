@@ -1,60 +1,17 @@
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Represents a single todo item.
-@immutable
-class Todo {
-  final String id;
-  final String text;
-  final bool isCompleted;
+part 'todo.freezed.dart';
+part 'todo.g.dart';
 
+/// Generates copyWith, toJson, Todo.fromJson, Operator ==, hashCode
+@freezed
+abstract class Todo with _$Todo {
   /// Creates a new Todo.
-  const Todo({
-    required this.id,
-    required this.text,
-    this.isCompleted = false,
-  });
+  const factory Todo({
+    required String id,
+    required String text,
+    @Default(false) bool isCompleted,
+  }) = _Todo;
 
-  // Create a copy with modified properties
-  Todo copyWith({
-    String? id,
-    String? text,
-    bool? isCompleted,
-  }) {
-    return Todo(
-      id: id ?? this.id,
-      text: text ?? this.text,
-      isCompleted: isCompleted ?? this.isCompleted,
-    );
-  }
-
-  // Convert to JSON for storage
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,   
-      'text': text,
-      'isCompleted': isCompleted,
-    };
-  }
-
-  // Create Todo from JSON
-  factory Todo.fromJson(Map<String, dynamic> json) {
-    return Todo(
-      id: json['id'] as String,
-      text: json['text'] as String,
-      isCompleted: json['isCompleted'] as bool,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is Todo &&
-        other.id == id &&
-        other.text == text &&
-        other.isCompleted == isCompleted;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(id, text, isCompleted);
-  }
+  factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 }
